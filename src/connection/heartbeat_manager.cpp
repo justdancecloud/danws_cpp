@@ -42,6 +42,7 @@ void HeartbeatManager::stop() {
     if (!running_) return;
     stopRequested_ = true;
     running_ = false;
+    cv_.notify_all();
     if (timerThread_.joinable()) {
         timerThread_.join();
     }
@@ -51,7 +52,12 @@ void HeartbeatManager::timerLoop() {
     using namespace std::chrono;
 
     while (!stopRequested_) {
-        std::this_thread::sleep_for(milliseconds(CHECK_INTERVAL_MS));
+        {
+            std::unique_lock<std::mutex> lock(mutex_);
+            cv_.wait_for(lock, milliseconds(CHECK_INTERVAL_MS), [this]() {
+                return stopRequested_.load();
+            });
+        }
         if (stopRequested_) break;
 
         auto now = steady_clock::now();

@@ -45,6 +45,7 @@ private:
     std::chrono::steady_clock::time_point lastReceived_;
     std::chrono::steady_clock::time_point lastSent_;
     std::mutex mutex_;
+    std::condition_variable cv_;
     std::thread timerThread_;
 
     void timerLoop();

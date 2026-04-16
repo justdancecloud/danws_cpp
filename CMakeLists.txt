@@ -16,6 +16,11 @@ add_library(danwebsocket STATIC
     src/connection/reconnect_engine.cpp
     src/api/topic_client_handle.cpp
     src/api/client.cpp
+    src/api/flat_state.cpp
+    src/api/principal_tx.cpp
+    src/api/topic_handle.cpp
+    src/api/session.cpp
+    src/api/server.cpp
 )
 
 target_include_directories(danwebsocket PUBLIC
@@ -45,6 +50,10 @@ if(DANWS_BUILD_TESTS)
     add_executable(test_key_registry tests/test_key_registry.cpp)
     target_link_libraries(test_key_registry PRIVATE danwebsocket)
     add_test(NAME key_registry COMMAND test_key_registry)
+
+    add_executable(test_server tests/test_server.cpp)
+    target_link_libraries(test_server PRIVATE danwebsocket)
+    add_test(NAME server COMMAND test_server)
 endif()
 
 # --- Install ---
